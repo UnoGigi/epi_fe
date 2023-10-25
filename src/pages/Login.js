@@ -25,7 +25,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:5050/login', {
+            const response = await fetch(`${process.env.REACT_APP_URL}/login`, {
                 headers: {
                     "Content-type": "application/json"
                 },
@@ -42,6 +42,12 @@ const Login = () => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    
+
+    const signIn = () => {
+        navigate('/registrati')
     }
 
     return (
@@ -68,8 +74,12 @@ const Login = () => {
                     type="submit">
                         LOGIN
                     </button>
-
                 </form>
+            </div>
+            <div className="flex justify-center align-items-center">
+                <button className="bg-green-600 p-5 rounded text-white" onClick={() => signIn()}>
+                    REGISTRATI
+                </button>
             </div>
         </>
     )

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useSession } from "../../middlewares/LineaProtetta";
 
 
 
@@ -11,12 +12,15 @@ const FormPost = () => {
         setFile(e.target.files[0]) //sempre posizione dei file, non cambia
     }
 
+    const session = useSession()
+    console.log( session.id);
+
     const uploadFile = async (imgcover) => {
         const fileData = new FormData()
         fileData.append('imgcover', imgcover)
 
         try {
-            const response = await fetch('http://localhost:5050/posts/cloudUpload', {
+            const response = await fetch(`${process.env.REACT_APP_URL}/posts/cloudUpload`, {
                 method: "POST",
                 body: fileData
             })
@@ -26,7 +30,7 @@ const FormPost = () => {
         }
     }
 
-
+    
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -36,10 +40,11 @@ const FormPost = () => {
                 const uploadCover = await uploadFile(file)
                 const finalBody = {
                     ...formData, 
-                    imgcover: uploadCover.imgcover
+                    imgcover: uploadCover.imgcover,
+                    author: session.id
                 }
 
-                const response = await fetch('http://localhost:5050/posts/create', {
+                const response = await fetch(`${process.env.REACT_APP_URL}/posts/create`, {
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -55,7 +60,6 @@ const FormPost = () => {
             console.error("Inserisci un'immagine");
         }
     }
-    
     return (
         <div className="my-5">
             <form 
@@ -108,16 +112,7 @@ const FormPost = () => {
                         rate: Number(e.target.value)
                     })}
                 />
-                <input
-                    className="w-[400px] p-1 rounded border-2"
-                    placeholder="author"
-                    name="author"
-                    type="text"
-                    onChange={(e) => setFormData({
-                        ...formData,
-                        author: e.target.value
-                    })}
-                />
+            
                 <div className="flex gap-2">
                     <button type="submit" className="p-2 bg-blue-800 hover:bg-blue-500 text-white rounded">
                         CREA NUOVO POST

@@ -7,7 +7,7 @@ const isAuth = () => {
     return JSON.parse(localStorage.getItem('utenteLoggato')) //prendo token dal localStorage
 }
 
-export const useSession = () => {
+export const useSession = () => {  //lo esporto per poterlo utilizzare anche negli altri componenti
     const session = isAuth()
     const decodeSesssion = session ? jwtDecode(session) : null      //se c'è il token lo decodifico
 
@@ -25,7 +25,7 @@ export const useSession = () => {
 const LineaProtetta = () => {
     const auth = isAuth()
 
-    return auth ? <Outlet/> : <Login/>  
+    return auth ? <Outlet/> : <Login/>  //se auth è vero ritorni i figli di Outlet altrimenti torni alla login
 }
 
 export default LineaProtetta

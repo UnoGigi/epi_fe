@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { nanoid } from 'nanoid';
 import { useSession } from "../../middlewares/LineaProtetta";
+import './latest.css'
 
 const isAuth = () => {
   return JSON.parse(localStorage.getItem('utenteLoggato')) //prendo token dal localStorage
@@ -14,10 +15,11 @@ const LatestPosts = () => {
     const [currentPages, setCurrentPages] = useState(1);
     const [post, setPost] = useState([])
     const [totalPages, setTotalPages] = useState(0)
-    console.log(post);
+    console.log("post", post);
 
     const session = useSession()
     console.log(session);
+    
 
     const getPost = async () => {
         try {
@@ -35,8 +37,6 @@ const LatestPosts = () => {
         } catch (error) {
             console.log(error);
         }
-
-        
     }
 
     useEffect(() => {
@@ -48,6 +48,21 @@ const LatestPosts = () => {
     }
 
     
+    const deletePost = async (postId) => {
+      try {
+        return await fetch (`${process.env.REACT_APP_URL}/posts/delete/${postId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    
 
 
     return (
@@ -55,7 +70,7 @@ const LatestPosts = () => {
         <div className="bg-white py-8 sm:py-12">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl lg:mx-0">
-              <h2 className="text-3xl font-bold tracking-tight text-blue-800 sm:text-4xl">POST DI FABIO</h2>
+              <h2 className="text-3xl font-bold tracking-tight text-blue-800 sm:text-4xl">POST </h2>
             </div>
             <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-blue-800 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
               {post && post?.map((post) => (
@@ -67,7 +82,7 @@ const LatestPosts = () => {
                     </p>
                   </div>
                   <div className="relative mt-8 flex items-center gap-x-4">
-                    <img src={post.imgcover} alt="" className=" bg-gray-50" />
+                    <img src={post.imgcover} alt="" className="imgLatest" />
                     
                   </div>
                   <div className="group relative">
@@ -78,7 +93,9 @@ const LatestPosts = () => {
                     <p className="mt-5 line-clamp-3 text-sm leading-6 text-white px-3">RATE: {post.rate}</p>
                     <p className="mt-5 line-clamp-3 text-sm leading-6 text-white px-3">Postato da {post.author.firstName} {post.author.lastName}</p>
                   </div>
-                  
+                  <button className="mt-3 mx-3 bg-red-600 p-2 rounded text-white" onClick={() => deletePost(post._id)}>
+                    Cancella
+                  </button>
                 </article>
               ))}
             </div>
